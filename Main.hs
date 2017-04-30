@@ -34,4 +34,6 @@ insertCharacter:: TextEdit -> C -> TextEdit
 insertCharacter (TextEdit l _ a b) c = (TextEdit (l ++ [head c]) [] a b)
 
 backspace :: TextEdit -> TextEdit
-backspace (TextEdit l s a b) = (TextEdit(reverse (tail (reverse l))) [] a b)
+backspace (TextEdit l s a b)
+   | s == [] = (TextEdit(reverse (tail (reverse l))) [] a b)
+   | otherwise (TextEdit l [] a b)
