@@ -8,6 +8,7 @@ data TextEdit = TextEdit L S A B deriving (Show)
 t = (TextEdit "sdad" "dsad" "oppj" "dsadasd")
 e = (TextEdit "sdad" "" "oppj" "dsadasd")
 f = (TextEdit "sdad" "" "oppj" "")
+o = (TextEdit "I am a good" "" " boi" "")
 getLeftCharacters:: TextEdit -> L
 getLeftCharacters (TextEdit l _ _ _) = l
 
@@ -56,3 +57,27 @@ paste (TextEdit l s a b)
 
 cut :: TextEdit -> TextEdit
 cut (TextEdit l s a b) = (TextEdit l [] a s)
+
+moveLeft :: TextEdit -> TextEdit
+moveLeft (TextEdit l _ a b) = (TextEdit (reverse (tail (reverse l))) [] ([(head(reverse l))]++a) b)
+
+moveRight :: TextEdit -> TextEdit
+moveRight (TextEdit l _ a b) = (TextEdit (l ++ [(head a)]) [] (tail a) b)
+
+moveWordLeft :: TextEdit -> TextEdit
+moveWordLeft (TextEdit l s a b)
+    |l == [] = (TextEdit [] s a b)
+    |(head (reverse l)) == ' ' = (TextEdit l s a b)
+    |otherwise = moveWordLeft (moveLeft (TextEdit l s a b))
+
+moveWordRight :: TextEdit -> TextEdit
+moveWordRight (TextEdit l s a b)
+  |a == [] = (TextEdit l s [] b)
+  |(head a) /= ' ' = (TextEdit l s a b)
+  |otherwise = moveWordRight (moveRight (TextEdit l s a b))
+
+selectLeft :: TextEdit -> TextEdit
+selectLeft (TextEdit l s a b) = (TextEdit (reverse (tail (reverse l))) ([(head(reverse l))]++s) a b)
+
+selectRight :: TextEdit -> TextEdit
+selectRight (TextEdit l s a b) = (TextEdit (l) (s ++ [(head a)]) (tail a) b)
