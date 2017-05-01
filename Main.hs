@@ -73,7 +73,7 @@ moveWordLeft (TextEdit l s a b)
 moveWordRight :: TextEdit -> TextEdit
 moveWordRight (TextEdit l s a b)
   |a == [] = (TextEdit l s [] b)
-  |(head a) /= ' ' = (TextEdit l s a b)
+  |(head a) == ' ' = (TextEdit l s a b)
   |otherwise = moveWordRight (moveRight (TextEdit l s a b))
 
 selectLeft :: TextEdit -> TextEdit
@@ -81,3 +81,30 @@ selectLeft (TextEdit l s a b) = (TextEdit (reverse (tail (reverse l))) ([(head(r
 
 selectRight :: TextEdit -> TextEdit
 selectRight (TextEdit l s a b) = (TextEdit (l) (s ++ [(head a)]) (tail a) b)
+
+selectWordLeft :: TextEdit -> TextEdit
+selectWordLeft (TextEdit l s a b)
+    |l == [] = (TextEdit [] s a b)
+    |(head (reverse l)) == ' ' = (TextEdit l s a b)
+    |otherwise = selectWordLeft (selectLeft (TextEdit l s a b))
+
+selectWordRight :: TextEdit -> TextEdit
+selectWordRight (TextEdit l s a b)
+  |a == [] = (TextEdit l s [] b)
+  |(head a) == ' ' = (TextEdit l s a b)
+  |otherwise = selectWordRight (selectRight (TextEdit l s a b))
+
+selectAllLeft :: TextEdit -> TextEdit
+selectAllLeft (TextEdit l s a b) = (TextEdit [] (l++s) a b)
+
+selectAllRight :: TextEdit -> TextEdit
+selectAllRight (TextEdit l s a b) = (TextEdit l (s++a) [] b)
+
+selectAll :: TextEdit -> TextEdit
+selectAll (TextEdit l s a b) = (TextEdit [] (l++s++a) [] b)
+
+home :: TextEdit -> TextEdit
+home (TextEdit l s a b) = (TextEdit [] [] (l++a) b)
+
+end :: TextEdit -> TextEdit
+end (TextEdit l s a b) = (TextEdit (l++a) [] [] b)
